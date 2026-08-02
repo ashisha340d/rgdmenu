@@ -82,10 +82,10 @@
                 android:gravity="center_vertical" />
 
             <TextView
-                android:id="@+id/textServedBadge"
+                android:id="@+id/textDoneBadge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/label_served"
+                android:text="@string/label_done"
                 android:textColor="#FFFFFF"
                 android:background="#2E7D32"
                 android:paddingStart="8dp"
@@ -111,12 +111,12 @@
                 android:textSize="12sp" />
 
             <Button
-                android:id="@+id/buttonMarkServed"
+                android:id="@+id/buttonMarkDone"
                 style="?android:attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/action_mark_served"
+                android:text="@string/action_mark_done"
                 android:textSize="12sp" />
 
             <Button
@@ -136,6 +136,31 @@
                 android:layout_weight="1"
                 android:text="@string/action_delete"
                 android:textColor="#D32F2F"
+                android:textSize="12sp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/buttonPlayVoice"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_play_voice_note"
+                android:textSize="12sp"
+                android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonForward"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/action_forward_whatsapp"
                 android:textSize="12sp" />
         </LinearLayout>
 

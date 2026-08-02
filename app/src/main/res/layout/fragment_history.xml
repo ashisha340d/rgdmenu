@@ -5,28 +5,20 @@
     android:orientation="vertical">
 
     <TextView
-        android:id="@+id/textTodayHeader"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:padding="16dp"
-        android:textSize="16sp"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/textEmptyDashboard"
+        android:id="@+id/textEmptyHistory"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:padding="24dp"
         android:gravity="center"
-        android:text="@string/msg_no_orders_today"
+        android:text="@string/msg_no_old_orders"
         android:visibility="gone" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerDashboard"
+        android:id="@+id/recyclerHistory"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
         android:clipToPadding="false"
-        android:paddingBottom="96dp" />
+        android:paddingBottom="16dp" />
 
 </LinearLayout>

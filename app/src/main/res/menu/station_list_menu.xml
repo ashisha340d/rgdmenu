@@ -6,10 +6,6 @@
         android:title="@string/action_manage_users"
         app:showAsAction="never" />
     <item
-        android:id="@+id/action_switch_station"
-        android:title="@string/action_switch_station"
-        app:showAsAction="never" />
-    <item
         android:id="@+id/action_sign_out"
         android:title="@string/action_sign_out"
         app:showAsAction="never" />

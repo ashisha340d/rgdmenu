@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="24dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/label_stations"
+            android:textStyle="bold" />
+
+        <CheckBox
+            android:id="@+id/checkMangarh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mangarh" />
+
+        <CheckBox
+            android:id="@+id/checkVrindavan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Vrindavan" />
+
+        <CheckBox
+            android:id="@+id/checkBarsana"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Barsana" />
+
+        <CheckBox
+            android:id="@+id/checkMussoorie"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Mussoorie" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/label_role"
+            android:textStyle="bold" />
+
+        <RadioGroup
+            android:id="@+id/radioRole"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <RadioButton
+                android:id="@+id/radioRoleUser"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/role_user" />
+
+            <RadioButton
+                android:id="@+id/radioRoleAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/role_admin" />
+
+            <RadioButton
+                android:id="@+id/radioRoleSuperAdmin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/role_superadmin" />
+
+        </RadioGroup>
+
+    </LinearLayout>
+</ScrollView>

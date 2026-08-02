@@ -79,6 +79,44 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/action_add_item" />
 
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/label_voice_note"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/textVoiceStatus"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="#666666"
+                android:text="@string/msg_no_voice_note" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="4dp">
+
+                <Button
+                    android:id="@+id/buttonRecordVoice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_record_voice_note" />
+
+                <Button
+                    android:id="@+id/buttonPlayVoice"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="@string/action_play_voice_note"
+                    android:enabled="false" />
+
+            </LinearLayout>
+
             <Button
                 android:id="@+id/buttonSaveOrder"
                 android:layout_width="match_parent"

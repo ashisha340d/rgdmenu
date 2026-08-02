@@ -2,7 +2,7 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/action_sign_out"
-        android:title="@string/action_sign_out"
+        android:id="@+id/action_seed_demo_data"
+        android:title="@string/action_seed_demo_data"
         app:showAsAction="never" />
 </menu>

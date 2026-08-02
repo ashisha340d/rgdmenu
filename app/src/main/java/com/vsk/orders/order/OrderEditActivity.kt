@@ -1,13 +1,21 @@
 package com.vsk.orders.order
 
+import android.Manifest
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.widget.EditText
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import com.vsk.orders.R
+import com.vsk.orders.audio.VoicePlayer
+import com.vsk.orders.audio.VoiceRecorder
+import com.vsk.orders.data.OrderItem
 import com.vsk.orders.data.Repo
 import com.vsk.orders.data.toOrder
 import com.vsk.orders.databinding.ActivityOrderEditBinding
@@ -19,10 +27,20 @@ import java.util.Locale
 class OrderEditActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityOrderEditBinding
-    private lateinit var groupId: String
+    private lateinit var stationId: String
     private var orderId: String? = null
     private var selectedTimeMillis: Long = System.currentTimeMillis()
-    private var loadedItems: List<com.vsk.orders.data.OrderItem> = emptyList()
+    private var loadedItems: List<OrderItem> = emptyList()
+
+    private var existingVoiceNoteUrl: String = ""
+    private var recordedVoiceFile: java.io.File? = null
+    private var isRecording = false
+    private val voiceRecorder by lazy { VoiceRecorder(this) }
+    private val voicePlayer = VoicePlayer()
+
+    private val requestMicPermission = registerForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) startRecording() else Toast.makeText(this, R.string.error_mic_permission, Toast.LENGTH_LONG).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -30,7 +48,7 @@ class OrderEditActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        groupId = intent.getStringExtra(EXTRA_GROUP_ID) ?: run { finish(); return }
+        stationId = intent.getStringExtra(EXTRA_STATION_ID) ?: run { finish(); return }
         orderId = intent.getStringExtra(EXTRA_ORDER_ID)
 
         supportActionBar?.title = if (orderId == null) getString(R.string.title_add_order) else getString(R.string.title_edit_order)
@@ -39,6 +57,8 @@ class OrderEditActivity : AppCompatActivity() {
         binding.buttonPickDateTime.setOnClickListener { pickDateTime() }
         binding.buttonAddItem.setOnClickListener { addItemRow("", "") }
         binding.buttonSaveOrder.setOnClickListener { save() }
+        binding.buttonRecordVoice.setOnClickListener { toggleRecording() }
+        binding.buttonPlayVoice.setOnClickListener { playVoice() }
 
         if (orderId != null) {
             loadOrder(orderId!!)
@@ -47,8 +67,14 @@ class OrderEditActivity : AppCompatActivity() {
         }
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        voicePlayer.stop()
+        if (isRecording) voiceRecorder.cancel()
+    }
+
     private fun loadOrder(id: String) {
-        Repo.order(groupId, id).get().addOnSuccessListener { doc ->
+        Repo.order(stationId, id).get().addOnSuccessListener { doc ->
             val order = doc.toOrder() ?: return@addOnSuccessListener
             binding.editEventType.setText(order.eventType)
             binding.editLocation.setText(order.location)
@@ -56,6 +82,8 @@ class OrderEditActivity : AppCompatActivity() {
             binding.editPax.setText(order.pax)
             selectedTimeMillis = order.orderTimeMillis
             loadedItems = order.items
+            existingVoiceNoteUrl = order.voiceNoteUrl
+            updateVoiceStatus()
             updateDateTimeButton()
 
             binding.itemsContainer.removeAllViews()
@@ -97,6 +125,45 @@ class OrderEditActivity : AppCompatActivity() {
         binding.buttonPickDateTime.text = format.format(java.util.Date(selectedTimeMillis))
     }
 
+    private fun toggleRecording() {
+        if (isRecording) {
+            val file = voiceRecorder.stop()
+            isRecording = false
+            binding.buttonRecordVoice.text = getString(R.string.action_record_voice_note)
+            if (file != null) {
+                recordedVoiceFile = file
+                updateVoiceStatus()
+            }
+            return
+        }
+        val hasPermission = ContextCompat.checkSelfPermission(this, Manifest.permission.RECORD_AUDIO) == PackageManager.PERMISSION_GRANTED
+        if (hasPermission) startRecording() else requestMicPermission.launch(Manifest.permission.RECORD_AUDIO)
+    }
+
+    private fun startRecording() {
+        voicePlayer.stop()
+        voiceRecorder.start()
+        isRecording = true
+        binding.buttonRecordVoice.text = getString(R.string.action_stop_recording)
+        binding.textVoiceStatus.text = getString(R.string.msg_recording)
+    }
+
+    private fun updateVoiceStatus() {
+        binding.buttonPlayVoice.isEnabled = recordedVoiceFile != null || existingVoiceNoteUrl.isNotBlank()
+        binding.textVoiceStatus.text = when {
+            recordedVoiceFile != null -> getString(R.string.msg_voice_note_recorded)
+            existingVoiceNoteUrl.isNotBlank() -> getString(R.string.msg_voice_note_attached)
+            else -> getString(R.string.msg_no_voice_note)
+        }
+    }
+
+    private fun playVoice() {
+        val local = recordedVoiceFile
+        val source = if (local != null) local.absolutePath else existingVoiceNoteUrl
+        if (source.isBlank()) return
+        voicePlayer.play(source) {}
+    }
+
     private fun collectItems(): List<Map<String, String>> {
         val items = mutableListOf<Map<String, String>>()
         for (i in 0 until binding.itemsContainer.childCount) {
@@ -124,8 +191,11 @@ class OrderEditActivity : AppCompatActivity() {
             return
         }
 
+        binding.buttonSaveOrder.isEnabled = false
+
         val id = orderId
         if (id == null) {
+            val newRef = Repo.orders(stationId).document()
             val data = hashMapOf(
                 "eventType" to eventType,
                 "location" to location,
@@ -136,12 +206,13 @@ class OrderEditActivity : AppCompatActivity() {
                 "createdBy" to email,
                 "createdAt" to System.currentTimeMillis(),
                 "acknowledgedBy" to emptyList<String>(),
-                "served" to false,
-                "servedBy" to ""
+                "done" to false,
+                "doneBy" to "",
+                "voiceNoteUrl" to ""
             )
-            Repo.orders(groupId).add(data)
-                .addOnSuccessListener { finish() }
-                .addOnFailureListener { e -> Toast.makeText(this, e.message ?: "Failed to save", Toast.LENGTH_LONG).show() }
+            newRef.set(data)
+                .addOnSuccessListener { uploadVoiceNoteIfNeeded(newRef.id) { finish() } }
+                .addOnFailureListener { e -> onSaveFailed(e) }
         } else {
             val data = mapOf(
                 "eventType" to eventType,
@@ -151,14 +222,36 @@ class OrderEditActivity : AppCompatActivity() {
                 "orderTimeMillis" to selectedTimeMillis,
                 "items" to items
             )
-            Repo.order(groupId, id).update(data)
-                .addOnSuccessListener { finish() }
-                .addOnFailureListener { e -> Toast.makeText(this, e.message ?: "Failed to save", Toast.LENGTH_LONG).show() }
+            Repo.order(stationId, id).update(data)
+                .addOnSuccessListener { uploadVoiceNoteIfNeeded(id) { finish() } }
+                .addOnFailureListener { e -> onSaveFailed(e) }
         }
     }
 
+    private fun onSaveFailed(e: Exception) {
+        binding.buttonSaveOrder.isEnabled = true
+        Toast.makeText(this, e.message ?: "Failed to save", Toast.LENGTH_LONG).show()
+    }
+
+    private fun uploadVoiceNoteIfNeeded(savedOrderId: String, onDone: () -> Unit) {
+        val file = recordedVoiceFile
+        if (file == null) {
+            onDone()
+            return
+        }
+        val ref = Repo.voiceNoteRef(stationId, savedOrderId)
+        ref.putFile(Uri.fromFile(file))
+            .addOnSuccessListener {
+                ref.downloadUrl.addOnSuccessListener { url ->
+                    Repo.order(stationId, savedOrderId).update("voiceNoteUrl", url.toString())
+                        .addOnCompleteListener { onDone() }
+                }.addOnFailureListener { onDone() }
+            }
+            .addOnFailureListener { onDone() }
+    }
+
     companion object {
-        const val EXTRA_GROUP_ID = "group_id"
+        const val EXTRA_STATION_ID = "station_id"
         const val EXTRA_ORDER_ID = "order_id"
     }
 }

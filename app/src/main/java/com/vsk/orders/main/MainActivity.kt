@@ -6,17 +6,20 @@ import android.view.Menu
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import com.vsk.orders.R
+import com.vsk.orders.admin.ManageUsersActivity
 import com.vsk.orders.auth.LoginActivity
 import com.vsk.orders.data.Repo
+import com.vsk.orders.data.toAppUser
 import com.vsk.orders.databinding.ActivityMainBinding
-import com.vsk.orders.group.GroupListActivity
 import com.vsk.orders.order.OrderEditActivity
+import com.vsk.orders.station.StationListActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private lateinit var groupId: String
+    private lateinit var stationId: String
     private var isAdmin: Boolean = false
+    private var isSuperAdmin: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -24,44 +27,49 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
         setSupportActionBar(binding.toolbar)
 
-        groupId = intent.getStringExtra(EXTRA_GROUP_ID) ?: run { finish(); return }
-        val groupName = intent.getStringExtra(EXTRA_GROUP_NAME) ?: ""
-        supportActionBar?.title = groupName
+        stationId = intent.getStringExtra(EXTRA_STATION_ID) ?: run { finish(); return }
+        val stationName = intent.getStringExtra(EXTRA_STATION_NAME) ?: ""
+        supportActionBar?.title = stationName
 
         binding.fabAddOrder.setOnClickListener {
             val i = Intent(this, OrderEditActivity::class.java)
-            i.putExtra(OrderEditActivity.EXTRA_GROUP_ID, groupId)
+            i.putExtra(OrderEditActivity.EXTRA_STATION_ID, stationId)
             startActivity(i)
         }
 
         binding.bottomNav.setOnItemSelectedListener { item ->
             when (item.itemId) {
-                R.id.nav_dashboard -> {
-                    showFragment(DashboardFragment.newInstance(groupId, isAdmin))
+                R.id.nav_board -> {
+                    showFragment(BoardFragment.newInstance(stationId, isAdmin))
                     true
                 }
-                R.id.nav_board -> {
-                    showFragment(BoardFragment.newInstance(groupId, isAdmin))
+                R.id.nav_history -> {
+                    showFragment(HistoryFragment.newInstance(stationId, isAdmin))
                     true
                 }
                 else -> false
             }
         }
 
-        loadAdminStatusAndStart()
+        loadRoleAndStart()
     }
 
-    private fun loadAdminStatusAndStart() {
+    private fun loadRoleAndStart() {
         val email = Repo.currentEmail
-        Repo.group(groupId).get()
+        if (email == null) {
+            showFragment(BoardFragment.newInstance(stationId, false))
+            return
+        }
+        Repo.user(email).get()
             .addOnSuccessListener { doc ->
-                @Suppress("UNCHECKED_CAST")
-                val admins = (doc.get("admins") as? List<String>) ?: emptyList()
-                isAdmin = email != null && admins.contains(email)
-                showFragment(DashboardFragment.newInstance(groupId, isAdmin))
+                val user = doc.toAppUser()
+                isAdmin = user?.isAdmin == true
+                isSuperAdmin = user?.isSuperAdmin == true
+                invalidateOptionsMenu()
+                showFragment(BoardFragment.newInstance(stationId, isAdmin))
             }
             .addOnFailureListener {
-                showFragment(DashboardFragment.newInstance(groupId, false))
+                showFragment(BoardFragment.newInstance(stationId, false))
             }
     }
 
@@ -73,13 +81,18 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.main_menu, menu)
+        menu.findItem(R.id.action_manage_users).isVisible = isSuperAdmin
         return true
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
-            R.id.action_switch_group -> {
-                startActivity(Intent(this, GroupListActivity::class.java))
+            R.id.action_manage_users -> {
+                startActivity(Intent(this, ManageUsersActivity::class.java))
+                true
+            }
+            R.id.action_switch_station -> {
+                startActivity(Intent(this, StationListActivity::class.java))
                 finish()
                 true
             }
@@ -94,7 +107,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     companion object {
-        const val EXTRA_GROUP_ID = "group_id"
-        const val EXTRA_GROUP_NAME = "group_name"
+        const val EXTRA_STATION_ID = "station_id"
+        const val EXTRA_STATION_NAME = "station_name"
     }
 }

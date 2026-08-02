@@ -55,6 +55,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
 
+            <Button
+                android:id="@+id/buttonPlayVoiceNote"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/action_play_voice_note"
+                android:visibility="gone" />
+
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -98,19 +106,26 @@
                 android:text="@string/action_acknowledge" />
 
             <TextView
-                android:id="@+id/textServedStatus"
+                android:id="@+id/textDoneStatus"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
                 android:textStyle="bold" />
 
             <Button
-                android:id="@+id/buttonMarkServed"
+                android:id="@+id/buttonMarkDone"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:text="@string/action_mark_served"
+                android:text="@string/action_mark_done"
                 android:visibility="gone" />
+
+            <Button
+                android:id="@+id/buttonForwardWhatsApp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:text="@string/action_forward_whatsapp" />
 
         </LinearLayout>
     </ScrollView>

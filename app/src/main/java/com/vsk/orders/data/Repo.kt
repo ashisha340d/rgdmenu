@@ -2,19 +2,25 @@ package com.vsk.orders.data
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 
 object Repo {
     val auth: FirebaseAuth by lazy { FirebaseAuth.getInstance() }
     val db: FirebaseFirestore by lazy { FirebaseFirestore.getInstance() }
+    val storage: FirebaseStorage by lazy { FirebaseStorage.getInstance() }
 
     val currentEmail: String?
         get() = auth.currentUser?.email
 
-    fun groups() = db.collection("groups")
+    fun users() = db.collection("users")
+    fun user(email: String) = db.collection("users").document(email)
 
-    fun group(groupId: String) = db.collection("groups").document(groupId)
+    fun stations() = db.collection("stations")
+    fun station(stationId: String) = db.collection("stations").document(stationId)
 
-    fun orders(groupId: String) = group(groupId).collection("orders")
+    fun orders(stationId: String) = station(stationId).collection("orders")
+    fun order(stationId: String, orderId: String) = orders(stationId).document(orderId)
 
-    fun order(groupId: String, orderId: String) = orders(groupId).document(orderId)
+    fun voiceNoteRef(stationId: String, orderId: String) =
+        storage.reference.child("stations/$stationId/orders/$orderId/voice.m4a")
 }

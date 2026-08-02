@@ -19,8 +19,9 @@ data class Order(
     val createdBy: String = "",
     val createdAt: Long = 0L,
     val acknowledgedBy: List<String> = emptyList(),
-    val served: Boolean = false,
-    val servedBy: String = ""
+    val done: Boolean = false,
+    val doneBy: String = "",
+    val voiceNoteUrl: String = ""
 )
 
 fun DocumentSnapshot.toOrder(): Order? {
@@ -45,8 +46,9 @@ fun DocumentSnapshot.toOrder(): Order? {
             createdBy = getString("createdBy") ?: "",
             createdAt = getLong("createdAt") ?: 0L,
             acknowledgedBy = (get("acknowledgedBy") as? List<String>) ?: emptyList(),
-            served = getBoolean("served") ?: false,
-            servedBy = getString("servedBy") ?: ""
+            done = getBoolean("done") ?: false,
+            doneBy = getString("doneBy") ?: "",
+            voiceNoteUrl = getString("voiceNoteUrl") ?: ""
         )
     } catch (e: Exception) {
         null

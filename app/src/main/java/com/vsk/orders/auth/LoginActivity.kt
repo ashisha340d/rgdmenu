@@ -1,11 +1,9 @@
 package com.vsk.orders.auth
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.vsk.orders.data.Repo
 import com.vsk.orders.databinding.ActivityLoginBinding
-import com.vsk.orders.group.GroupListActivity
 
 class LoginActivity : AppCompatActivity() {
 
@@ -16,8 +14,9 @@ class LoginActivity : AppCompatActivity() {
         binding = ActivityLoginBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        if (Repo.auth.currentUser != null) {
-            openGroupList()
+        val email = Repo.currentEmail
+        if (email != null) {
+            AuthRouter.route(this, email)
             return
         }
 
@@ -42,7 +41,7 @@ class LoginActivity : AppCompatActivity() {
         }
         task.addOnSuccessListener {
             setLoading(false)
-            openGroupList()
+            AuthRouter.route(this, email)
         }.addOnFailureListener { e ->
             setLoading(false)
             showError(e.message ?: "Authentication failed")
@@ -58,10 +57,5 @@ class LoginActivity : AppCompatActivity() {
     private fun showError(message: String) {
         binding.textError.text = message
         binding.textError.visibility = android.view.View.VISIBLE
-    }
-
-    private fun openGroupList() {
-        startActivity(Intent(this, GroupListActivity::class.java))
-        finish()
     }
 }

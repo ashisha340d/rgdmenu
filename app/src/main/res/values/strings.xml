@@ -5,45 +5,62 @@
     <string name="hint_password">Password</string>
     <string name="action_sign_in">Sign In</string>
     <string name="action_create_account">Create Account</string>
-
-    <string name="title_my_groups">My Groups</string>
-    <string name="msg_no_groups">No groups yet. Tap + to create or join one.</string>
-    <string name="action_add_group">Add Group</string>
-    <string name="action_create_group">Create New Group</string>
-    <string name="action_join_group">Join Existing Group</string>
-    <string name="hint_group_name">Group name (e.g. VSK Catering)</string>
-    <string name="hint_group_code">Group code</string>
-    <string name="action_create">Create</string>
-    <string name="action_join">Join</string>
-    <string name="action_cancel">Cancel</string>
-    <string name="error_group_not_found">Group not found for that code</string>
-    <string name="msg_already_member">You are already a member of this group</string>
-    <string name="msg_joined_group">Joined group</string>
     <string name="action_sign_out">Sign Out</string>
-
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_board">Board</string>
-    <string name="action_switch_group">Switch Group</string>
-
-    <string name="msg_no_orders_today">No orders for today yet.</string>
-    <string name="msg_no_orders">No orders yet. Tap + to add one.</string>
-
-    <string name="label_served">SERVED</string>
-    <string name="action_acknowledge">Acknowledge</string>
-    <string name="action_unacknowledge">Un-acknowledge</string>
-    <string name="action_mark_served">Mark Served</string>
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
     <string name="action_edit">Edit</string>
     <string name="action_delete">Delete</string>
+    <string name="action_approve">Approve</string>
+
+    <!-- Approval / PIN onboarding -->
+    <string name="title_waiting_approval">Waiting for Approval</string>
+    <string name="msg_waiting_approval">An admin needs to approve your account and assign you to a station before you can continue. This screen will update automatically once you\'re approved.</string>
+    <string name="title_create_pin">Create a PIN</string>
+    <string name="msg_create_pin">Set a 4-digit PIN so you can quickly unlock the app next time, without typing your email and password again.</string>
+    <string name="hint_pin">PIN</string>
+    <string name="hint_pin_confirm">Confirm PIN</string>
+    <string name="action_save_pin">Save PIN</string>
+    <string name="title_enter_pin_for">Welcome back\n%1$s</string>
+    <string name="action_unlock">Unlock</string>
+    <string name="action_forgot_pin">Forgot PIN?</string>
+
+    <!-- Stations -->
+    <string name="title_my_stations">My Stations</string>
+    <string name="msg_no_stations">You haven\'t been assigned to a station yet. Ask a Super Admin to assign you one.</string>
+    <string name="action_switch_station">Switch Station</string>
+
+    <!-- Admin: manage users -->
+    <string name="title_manage_users">Manage Users</string>
+    <string name="action_manage_users">Manage Users</string>
+    <string name="action_seed_demo_data">Seed Demo Data</string>
+    <string name="msg_demo_data_seeded">Demo stations and users seeded</string>
+    <string name="label_stations">Stations</string>
+    <string name="label_role">Role</string>
+    <string name="role_user">User</string>
+    <string name="role_admin">Admin</string>
+    <string name="role_superadmin">Super Admin</string>
+
+    <!-- Board / History -->
+    <string name="title_board">Board</string>
+    <string name="title_history">History</string>
+    <string name="msg_no_orders">No orders yet. Tap + to add one.</string>
+    <string name="msg_no_old_orders">No past orders yet.</string>
+    <string name="action_add_order">Add Order</string>
+
+    <string name="label_done">DONE</string>
+    <string name="action_acknowledge">Acknowledge</string>
+    <string name="action_unacknowledge">Un-acknowledge</string>
+    <string name="action_mark_done">Mark Done</string>
     <string name="label_not_acknowledged">Not acknowledged yet</string>
     <string name="label_acknowledged_count">Acknowledged by %1$d</string>
     <string name="label_acknowledged_by">Acknowledged by: %1$s</string>
-    <string name="label_served_by">Served by %1$s</string>
-    <string name="label_not_served">Not served yet</string>
+    <string name="label_done_by">Done by %1$s</string>
+    <string name="label_not_done">Not done yet</string>
 
-    <string name="action_add_order">Add Order</string>
     <string name="hint_item_name">Item</string>
     <string name="hint_item_qty">Qty</string>
     <string name="action_remove_item">Remove item</string>
+    <string name="action_add_item">+ Add Item</string>
 
     <string name="hint_event_type">Event type (e.g. Room Visit, Picnic)</string>
     <string name="action_pick_date_time">Pick date &amp; time</string>
@@ -51,8 +68,6 @@
     <string name="hint_contact_name">Contact name</string>
     <string name="hint_pax">Pax (optional)</string>
     <string name="label_items">Items</string>
-    <string name="action_add_item">+ Add Item</string>
-    <string name="action_save">Save</string>
     <string name="error_fill_required">Enter an event type and at least one item</string>
 
     <string name="title_add_order">Add Order</string>
@@ -64,4 +79,18 @@
 
     <string name="msg_confirm_delete">Delete this order? This cannot be undone.</string>
     <string name="msg_quantities_saved">Quantities saved</string>
+
+    <!-- Voice notes -->
+    <string name="label_voice_note">Voice Note</string>
+    <string name="msg_no_voice_note">No voice note</string>
+    <string name="msg_recording">Recording…</string>
+    <string name="msg_voice_note_recorded">Voice note recorded — will attach on save</string>
+    <string name="msg_voice_note_attached">Voice note attached</string>
+    <string name="action_record_voice_note">Record</string>
+    <string name="action_stop_recording">Stop</string>
+    <string name="action_play_voice_note">Play Voice Note</string>
+    <string name="error_mic_permission">Microphone permission is needed to record a voice note</string>
+
+    <!-- WhatsApp -->
+    <string name="action_forward_whatsapp">Forward to WhatsApp</string>
 </resources>

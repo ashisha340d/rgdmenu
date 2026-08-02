@@ -1,0 +1,20 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function myProfile() {
+      return firestore.get(/databases/(default)/documents/users/$(request.auth.token.email));
+    }
+    function isApprovedMember(stationId) {
+      return request.auth != null &&
+        firestore.exists(/databases/(default)/documents/users/$(request.auth.token.email)) &&
+        myProfile().data.status == 'approved' &&
+        stationId in myProfile().data.stations;
+    }
+
+    match /stations/{stationId}/orders/{orderId}/{fileName} {
+      allow read, write: if isApprovedMember(stationId);
+    }
+  }
+}

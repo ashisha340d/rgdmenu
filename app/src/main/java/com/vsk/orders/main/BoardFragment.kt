@@ -7,20 +7,23 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.ListenerRegistration
 import com.vsk.orders.data.Order
 import com.vsk.orders.data.Repo
 import com.vsk.orders.data.toOrder
 import com.vsk.orders.databinding.FragmentBoardBinding
 import com.vsk.orders.order.OrderDetailActivity
 import com.vsk.orders.order.OrderEditActivity
+import java.util.Calendar
 
+/** Combined structured view: Today's orders, then Upcoming orders, in one scroll. */
 class BoardFragment : Fragment() {
 
     private var _binding: FragmentBoardBinding? = null
     private val binding get() = _binding!!
-    private lateinit var groupId: String
+    private lateinit var stationId: String
     private lateinit var adapter: OrderListAdapter
-    private var listenerRegistration: com.google.firebase.firestore.ListenerRegistration? = null
+    private var listenerRegistration: ListenerRegistration? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -31,11 +34,11 @@ class BoardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        groupId = requireArguments().getString(ARG_GROUP_ID)!!
+        stationId = requireArguments().getString(ARG_STATION_ID)!!
         val isAdmin = requireArguments().getBoolean(ARG_IS_ADMIN)
 
         adapter = OrderListAdapter(
-            groupId = groupId,
+            stationId = stationId,
             isAdmin = isAdmin,
             onOpen = { order -> openDetail(order) },
             onEdit = { order -> openEdit(order) }
@@ -46,13 +49,23 @@ class BoardFragment : Fragment() {
 
     override fun onStart() {
         super.onStart()
-        listenerRegistration = Repo.orders(groupId)
+        val cal = Calendar.getInstance()
+        cal.set(Calendar.HOUR_OF_DAY, 0)
+        cal.set(Calendar.MINUTE, 0)
+        cal.set(Calendar.SECOND, 0)
+        cal.set(Calendar.MILLISECOND, 0)
+        val startOfToday = cal.timeInMillis
+        val startOfTomorrow = startOfToday + 24 * 60 * 60 * 1000
+
+        listenerRegistration = Repo.orders(stationId)
             .orderBy("orderTimeMillis")
             .addSnapshotListener { snapshot, _ ->
                 if (_binding == null) return@addSnapshotListener
-                val orders = snapshot?.documents?.mapNotNull { it.toOrder() } ?: emptyList()
-                adapter.submitList(orders)
-                binding.textEmptyBoard.visibility = if (orders.isEmpty()) View.VISIBLE else View.GONE
+                val all = snapshot?.documents?.mapNotNull { it.toOrder() } ?: emptyList()
+                val today = all.filter { it.orderTimeMillis in startOfToday until startOfTomorrow }
+                val upcoming = all.filter { it.orderTimeMillis >= startOfTomorrow }
+                adapter.submitSections(listOf("Today" to today, "Upcoming" to upcoming))
+                binding.textEmptyBoard.visibility = if (adapter.isEmpty) View.VISIBLE else View.GONE
             }
     }
 
@@ -68,26 +81,26 @@ class BoardFragment : Fragment() {
 
     private fun openDetail(order: Order) {
         val intent = Intent(requireContext(), OrderDetailActivity::class.java)
-        intent.putExtra(OrderDetailActivity.EXTRA_GROUP_ID, groupId)
+        intent.putExtra(OrderDetailActivity.EXTRA_STATION_ID, stationId)
         intent.putExtra(OrderDetailActivity.EXTRA_ORDER_ID, order.id)
         startActivity(intent)
     }
 
     private fun openEdit(order: Order) {
         val intent = Intent(requireContext(), OrderEditActivity::class.java)
-        intent.putExtra(OrderEditActivity.EXTRA_GROUP_ID, groupId)
+        intent.putExtra(OrderEditActivity.EXTRA_STATION_ID, stationId)
         intent.putExtra(OrderEditActivity.EXTRA_ORDER_ID, order.id)
         startActivity(intent)
     }
 
     companion object {
-        private const val ARG_GROUP_ID = "group_id"
+        private const val ARG_STATION_ID = "station_id"
         private const val ARG_IS_ADMIN = "is_admin"
 
-        fun newInstance(groupId: String, isAdmin: Boolean): BoardFragment {
+        fun newInstance(stationId: String, isAdmin: Boolean): BoardFragment {
             val fragment = BoardFragment()
             fragment.arguments = Bundle().apply {
-                putString(ARG_GROUP_ID, groupId)
+                putString(ARG_STATION_ID, stationId)
                 putBoolean(ARG_IS_ADMIN, isAdmin)
             }
             return fragment
