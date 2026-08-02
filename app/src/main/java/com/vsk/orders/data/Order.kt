@@ -44,7 +44,6 @@ fun DocumentSnapshot.toOrder(): Order? {
             items = items,
             createdBy = getString("createdBy") ?: "",
             createdAt = getLong("createdAt") ?: 0L,
-            @Suppress("UNCHECKED_CAST")
             acknowledgedBy = (get("acknowledgedBy") as? List<String>) ?: emptyList(),
             served = getBoolean("served") ?: false,
             servedBy = getString("servedBy") ?: ""
