@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "000000000000",
-    "project_id": "vsk-orders-placeholder",
-    "storage_bucket": "vsk-orders-placeholder.appspot.com"
+    "project_number": "561071493123",
+    "project_id": "vskorder-b87f4",
+    "storage_bucket": "vskorder-b87f4.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:000000000000:android:0000000000000000000000",
+        "mobilesdk_app_id": "1:561071493123:android:115f419da694574b457e36",
         "android_client_info": {
           "package_name": "com.vsk.orders"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyDUMMYPLACEHOLDERKEYDUMMY00000000"
+          "current_key": "AIzaSyCaImEX4s3jDXCX5JpnALUFluR2RDkNiD0"
         }
       ],
       "services": {
