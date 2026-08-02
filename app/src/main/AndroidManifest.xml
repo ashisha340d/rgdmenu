@@ -1,19 +1,28 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
     <application
         android:allowBackup="true"
         android:label="@string/app_name"
-        android:theme="@style/Theme.RgdMenu"
+        android:theme="@style/Theme.VskOrders"
         android:supportsRtl="true">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".auth.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".group.GroupListActivity" android:exported="false" />
+        <activity android:name=".main.MainActivity" android:exported="false" />
+        <activity android:name=".order.OrderEditActivity" android:exported="false" />
+        <activity android:name=".order.OrderDetailActivity" android:exported="false" />
+
     </application>
 
 </manifest>
