@@ -103,7 +103,7 @@
 
             <Button
                 android:id="@+id/buttonAcknowledge"
-                style="?android:attr/borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -112,7 +112,7 @@
 
             <Button
                 android:id="@+id/buttonMarkDone"
-                style="?android:attr/borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -121,7 +121,7 @@
 
             <Button
                 android:id="@+id/buttonEdit"
-                style="?android:attr/borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -130,7 +130,7 @@
 
             <Button
                 android:id="@+id/buttonDelete"
-                style="?android:attr/borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -146,7 +146,7 @@
 
             <Button
                 android:id="@+id/buttonPlayVoice"
-                style="?android:attr/borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
@@ -156,7 +156,7 @@
 
             <Button
                 android:id="@+id/buttonForward"
-                style="?android:attr/borderlessButtonStyle"
+                style="?attr/borderlessButtonStyle"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"

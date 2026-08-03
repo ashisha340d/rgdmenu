@@ -42,7 +42,7 @@
 
     <Button
         android:id="@+id/buttonForgotPin"
-        style="?android:attr/borderlessButtonStyle"
+        style="?attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="12dp"
@@ -50,7 +50,7 @@
 
     <Button
         android:id="@+id/buttonSignOut"
-        style="?android:attr/borderlessButtonStyle"
+        style="?attr/borderlessButtonStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/action_sign_out" />

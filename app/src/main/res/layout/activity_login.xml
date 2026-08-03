@@ -59,6 +59,6 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:text="@string/action_create_account"
-        style="?android:attr/borderlessButtonStyle" />
+        style="?attr/borderlessButtonStyle" />
 
 </LinearLayout>
