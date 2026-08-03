@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat
 import com.vsk.orders.R
 import com.vsk.orders.audio.VoicePlayer
 import com.vsk.orders.audio.VoiceRecorder
+import com.vsk.orders.data.Constants
 import com.vsk.orders.data.OrderItem
 import com.vsk.orders.data.Repo
 import com.vsk.orders.data.toOrder
@@ -57,6 +58,8 @@ class OrderEditActivity : AppCompatActivity() {
         binding.buttonPickDateTime.setOnClickListener { pickDateTime() }
         binding.buttonAddItem.setOnClickListener { addItemRow("", "") }
         binding.buttonSaveOrder.setOnClickListener { save() }
+        binding.voiceSection.visibility =
+            if (Constants.VOICE_NOTES_ENABLED) android.view.View.VISIBLE else android.view.View.GONE
         binding.buttonRecordVoice.setOnClickListener { toggleRecording() }
         binding.buttonPlayVoice.setOnClickListener { playVoice() }
 
@@ -235,7 +238,7 @@ class OrderEditActivity : AppCompatActivity() {
 
     private fun uploadVoiceNoteIfNeeded(savedOrderId: String, onDone: () -> Unit) {
         val file = recordedVoiceFile
-        if (file == null) {
+        if (file == null || !Constants.VOICE_NOTES_ENABLED) {
             onDone()
             return
         }

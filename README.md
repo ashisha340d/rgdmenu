@@ -5,7 +5,7 @@ A multi-user Android app for logging and tracking catering/event orders in real 
 - **Board**: a single structured view of Today's orders followed by Upcoming orders. Any assigned member can add/edit/delete an order.
 - **History**: past orders, most recent first.
 - **Acknowledge**: any member can acknowledge an order; the app tracks who has.
-- **Voice notes**: record a short voice note on an order (like a WhatsApp voice message) and play it back.
+- **Voice notes**: record a short voice note on an order (like a WhatsApp voice message) and play it back. Off by default — see setup step 4.
 - **Forward to WhatsApp**: turn an order into a formatted text message and hand it to WhatsApp's share sheet.
 - **Admin**: mark an order Done, and set the final per-item quantity (e.g. turning "Coffee" into "Coffee 5 liter — 200 glass").
 - **Super Admin**: approves new users and assigns them to one or more Stations, sets their role (User / Admin / Super Admin).
@@ -31,12 +31,11 @@ The repo ships with a **placeholder** `app/google-services.json` so CI can compi
 
 1. Go to the [Firebase console](https://console.firebase.google.com/) and create a new project (free "Spark" plan is enough — voice notes are small, so Storage should stay within the free tier for a while).
 2. **Build → Authentication → Get started**, enable the **Email/Password** sign-in provider.
-3. **Build → Firestore Database → Create database**, start in production mode, pick any region.
-4. **Build → Storage → Get started**, same region, production mode.
+3. **Build → Firestore Database → Create database**, database ID `(default)`, pick any region, and choose **Start in test mode** — that applies working rules for you. (Production mode denies every read and write until you publish rules by hand, which looks exactly like a broken app.)
+4. **Skip Storage.** Cloud Storage for Firebase now requires the paid Blaze plan, so voice notes are turned off by default (`Constants.VOICE_NOTES_ENABLED = false`). Everything else runs on the free Spark plan. To enable voice notes later: upgrade to Blaze, create the Storage bucket, publish [`storage.rules`](storage.rules), and flip that flag to `true`.
 5. **Project settings → General**, under "Your apps", click the Android icon to register an app with package name **`com.vsk.orders`**. Download the generated `google-services.json`.
 6. Replace `app/google-services.json` in this repo with the one you downloaded, then push — CI rebuilds against your real backend.
-7. **Firestore Database → Rules**: paste the contents of [`firestore.rules`](firestore.rules) and Publish.
-8. **Storage → Rules**: paste the contents of [`storage.rules`](storage.rules) and Publish.
+7. **Firestore Database → Rules** (the tab across the top of the Firestore page, not an item in the left menu): paste the contents of [`firestore.rules`](firestore.rules) and Publish. Test mode is fine to start with, but it expires after 30 days and lets any signed-in user do anything — these rules enforce the actual Super Admin / station permissions.
 
 ## Getting set up as Super Admin + demo accounts
 

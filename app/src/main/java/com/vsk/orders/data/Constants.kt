@@ -1,6 +1,12 @@
 package com.vsk.orders.data
 
 object Constants {
+    // Voice notes need Cloud Storage for Firebase, which Google now gates
+    // behind the paid Blaze plan. With this off the recording UI is hidden
+    // everywhere and no upload is attempted, so the rest of the app runs on
+    // the free tier. Flip to true once the project has billing enabled.
+    const val VOICE_NOTES_ENABLED = false
+
     // Hardcoded bootstrap super admins — mirrored in firestore.rules so the
     // very first sign-in for these emails is allowed to self-elevate.
     val SUPER_ADMIN_EMAILS = listOf("ashisha340d@gmail.com")
