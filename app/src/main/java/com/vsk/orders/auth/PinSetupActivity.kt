@@ -35,7 +35,7 @@ class PinSetupActivity : AppCompatActivity() {
             }
             Repo.user(email).update("pinHash", PinUtil.hash(pin, email))
                 .addOnSuccessListener { AuthRouter.goHome(this) }
-                .addOnFailureListener { e -> showError(e.message ?: "Failed to save PIN") }
+                .addOnFailureListener { e -> showError(AuthRouter.explain(e, "save your PIN")) }
         }
     }
 

@@ -61,4 +61,13 @@
         android:text="@string/action_create_account"
         style="?attr/borderlessButtonStyle" />
 
+    <Button
+        android:id="@+id/buttonSignOut"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/action_sign_out"
+        android:visibility="gone"
+        style="?attr/borderlessButtonStyle" />
+
 </LinearLayout>

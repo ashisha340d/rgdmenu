@@ -9,6 +9,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.vsk.orders.R
+import com.vsk.orders.auth.AuthRouter
 import com.vsk.orders.auth.PinUtil
 import com.vsk.orders.data.AppUser
 import com.vsk.orders.data.Constants
@@ -50,7 +51,7 @@ class ManageUsersActivity : AppCompatActivity() {
             val approved = all.filter { it.status == STATUS_APPROVED }
             adapter.submit(pending, approved)
         }.addOnFailureListener { e ->
-            Toast.makeText(this, e.message ?: "Failed to load users", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, AuthRouter.explain(e, "load users"), Toast.LENGTH_LONG).show()
         }
     }
 
@@ -110,19 +111,28 @@ class ManageUsersActivity : AppCompatActivity() {
     }
 
     private fun seedDemoData() {
+        val allStations = Constants.SEED_STATIONS.map { it.id }
         Constants.SEED_STATIONS.forEach { seed ->
             Repo.station(seed.id).set(mapOf("name" to seed.name))
+                .addOnFailureListener { e ->
+                    Toast.makeText(this, AuthRouter.explain(e, "create stations"), Toast.LENGTH_LONG).show()
+                }
         }
         Constants.DEMO_USER_EMAILS.forEach { email ->
             Repo.user(email).set(
                 mapOf(
                     "status" to STATUS_APPROVED,
                     "role" to ROLE_USER,
-                    "stations" to Constants.SEED_STATIONS.map { it.id },
+                    "stations" to allStations,
                     "pinHash" to PinUtil.hash(Constants.DEMO_PIN, email),
                     "createdAt" to System.currentTimeMillis()
                 )
             )
+        }
+        // Profiles created before stations existed have an empty station list,
+        // which would drop the seeding admin on an empty station picker.
+        Repo.currentEmail?.let { email ->
+            Repo.user(email).update("stations", allStations)
         }
         Toast.makeText(this, R.string.msg_demo_data_seeded, Toast.LENGTH_LONG).show()
         loadUsers()

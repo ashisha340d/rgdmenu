@@ -27,6 +27,7 @@
     <!-- Stations -->
     <string name="title_my_stations">My Stations</string>
     <string name="msg_no_stations">You haven\'t been assigned to a station yet. Ask a Super Admin to assign you one.</string>
+    <string name="msg_stations_missing">Your stations haven\'t been created yet. A Super Admin needs to run Manage Users → Seed Demo Data.</string>
     <string name="action_switch_station">Switch Station</string>
 
     <!-- Admin: manage users -->

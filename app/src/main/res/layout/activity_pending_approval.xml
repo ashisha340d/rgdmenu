@@ -26,6 +26,15 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp" />
 
+    <TextView
+        android:id="@+id/textError"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        android:textColor="#D32F2F"
+        android:visibility="gone" />
+
     <Button
         android:id="@+id/buttonSignOut"
         android:layout_width="wrap_content"

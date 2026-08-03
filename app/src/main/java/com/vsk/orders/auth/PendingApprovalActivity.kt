@@ -33,7 +33,13 @@ class PendingApprovalActivity : AppCompatActivity() {
             finish()
             return
         }
-        listenerRegistration = Repo.user(email).addSnapshotListener { doc, _ ->
+        listenerRegistration = Repo.user(email).addSnapshotListener { doc, error ->
+            if (error != null) {
+                binding.textError.text = AuthRouter.explain(error, "check your approval status")
+                binding.textError.visibility = android.view.View.VISIBLE
+                return@addSnapshotListener
+            }
+            binding.textError.visibility = android.view.View.GONE
             val user = doc?.toAppUser() ?: return@addSnapshotListener
             if (user.isApproved) {
                 AuthRouter.route(this, email)

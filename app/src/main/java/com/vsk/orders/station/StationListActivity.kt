@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.firebase.firestore.FieldPath
 import com.vsk.orders.R
 import com.vsk.orders.admin.ManageUsersActivity
+import com.vsk.orders.auth.AuthRouter
 import com.vsk.orders.auth.LoginActivity
 import com.vsk.orders.data.AppUser
 import com.vsk.orders.data.Repo
@@ -43,17 +44,19 @@ class StationListActivity : AppCompatActivity() {
             finish()
             return
         }
-        Repo.user(email).get().addOnSuccessListener { doc ->
-            val user = doc.toAppUser() ?: return@addOnSuccessListener
-            currentUser = user
-            invalidateOptionsMenu()
-            loadStations(user)
-        }
+        Repo.user(email).get()
+            .addOnSuccessListener { doc ->
+                val user = doc.toAppUser() ?: return@addOnSuccessListener
+                currentUser = user
+                invalidateOptionsMenu()
+                loadStations(user)
+            }
+            .addOnFailureListener { e -> showEmpty(AuthRouter.explain(e, "load your profile")) }
     }
 
     private fun loadStations(user: AppUser) {
         if (user.stations.isEmpty()) {
-            binding.textEmpty.visibility = android.view.View.VISIBLE
+            showEmpty(getString(R.string.msg_no_stations))
             return
         }
         Repo.stations()
@@ -66,8 +69,20 @@ class StationListActivity : AppCompatActivity() {
                     return@addOnSuccessListener
                 }
                 adapter.submitList(stations)
-                binding.textEmpty.visibility = if (stations.isEmpty()) android.view.View.VISIBLE else android.view.View.GONE
+                if (stations.isEmpty()) {
+                    // Assigned to stations that don't exist yet — a Super Admin
+                    // still has to seed them from Manage Users.
+                    showEmpty(getString(R.string.msg_stations_missing))
+                } else {
+                    binding.textEmpty.visibility = android.view.View.GONE
+                }
             }
+            .addOnFailureListener { e -> showEmpty(AuthRouter.explain(e, "load your stations")) }
+    }
+
+    private fun showEmpty(message: String) {
+        binding.textEmpty.text = message
+        binding.textEmpty.visibility = android.view.View.VISIBLE
     }
 
     private fun openStation(station: Station) {

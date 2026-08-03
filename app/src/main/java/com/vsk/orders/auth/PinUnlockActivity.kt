@@ -51,7 +51,7 @@ class PinUnlockActivity : AppCompatActivity() {
                     showError("Incorrect PIN")
                 }
             }
-            .addOnFailureListener { e -> showError(e.message ?: "Failed to verify PIN") }
+            .addOnFailureListener { e -> showError(AuthRouter.explain(e, "verify your PIN")) }
     }
 
     private fun forgotPin() {
@@ -60,7 +60,7 @@ class PinUnlockActivity : AppCompatActivity() {
                 startActivity(Intent(this, PinSetupActivity::class.java))
                 finish()
             }
-            .addOnFailureListener { e -> showError(e.message ?: "Failed to reset PIN") }
+            .addOnFailureListener { e -> showError(AuthRouter.explain(e, "reset your PIN")) }
     }
 
     private fun showError(message: String) {
